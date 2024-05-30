@@ -46,7 +46,9 @@ if (!empty($session->getFlashdata('suksesupload'))) {
           <div class="card-header d-flex p-0">
             <h3 class="card-title p-3"><i class="fas fa-user" style="color: #1b3e72;"></i> Biodata Siswa</h3>
             <ul class="nav nav-pills ml-auto p-2">
-              <li class="nav-item"><a href="#" class="nav-link btn btn-flat bg-pink tomboledit" onclick="edit('<?php echo $siswa['nisn'] ?>')"><i class=" fas fa-pencil-alt"></i> Edit Biodata</a></li>
+              <li class="nav-item btn-primary">
+                <button type="button" class="nav-link btn btn-flat bg-pink tomboledit" onclick="edit('<?= $siswa['nis'] ?>')"><i class=" fas fa-pencil-alt"></i> Edit Biodata</button>
+              </li>
             </ul>
           </div>
           <!-- /.card-header -->
@@ -128,16 +130,18 @@ if (!empty($session->getFlashdata('suksesupload'))) {
     biodatasiswa();
   })
 
-  function edit(nisn) {
+  function edit(nis) {
     $.ajax({
       type: "post",
       url: "<?= site_url('Siswa/formeditbiodata') ?>",
       data: {
-        nisn: nisn
+        nis: nis
       },
       dataType: "json",
       beforeSend: function() {
         $('.viewdata').html('<div class="overlay"><h3><i class="fa fa-spin fa-spinner"></i> Loading...</h3></div>');
+        $(".tomboledit").html("<i class='fa fa-spin fa-spinner'></i> Loading...");
+        $(".tomboledit").attr("disabled", "disable");
       },
       success: function(response) {
         if (response.data) {
@@ -148,6 +152,7 @@ if (!empty($session->getFlashdata('suksesupload'))) {
         $(".tomboledit").removeClass("bg-pink").addClass("bg-gray");
         $(".tomboledit").attr("onclick", "biodatasiswa()");
         $(".tomboledit").html("<i class='fa fa-ban'></i> Batal Edit");
+        $(".tomboledit").removeAttr("disabled", "disable");
       },
       error: function(xhr, ajaxOption, trhownError) {
         alert(xhr.status + "\n" + xhr.responseText + "\n" + trhownError);

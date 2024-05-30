@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Libraries\Hash;
 use App\Models\UserModel;
 use App\Models\PengunjungModel;
+use App\Models\PtkModel;
+use App\Models\SiswaModel;
 
 class Perpustakaan extends BaseController
 {
@@ -28,19 +30,22 @@ class Perpustakaan extends BaseController
             $string = $this->request->getVar("id");
             $pieces = explode("/", $string);
             $id = end($pieces);
-            $builder = $this->db->table('siswa');
-            $builder->select('*');
-            $builder->join('kelas', 'siswa.id_kelas = kelas.id_kelas', 'left');
-            $builder->where("nisn_en", $id);
-            $builder->where("status_aktif", 0);
-            $query = $builder->get();
-            $siswa = $query->getResultArray();
-
-            $builder = $this->db->table('ptk');
-            $builder->select('*');
-            $builder->where("nik_en", $id);
-            $query = $builder->get();
-            $ptk = $query->getResultArray();
+            $siswaModel = new SiswaModel();
+            $siswa = $siswaModel->getSiswabynisn($id);
+            // $builder = $this->db->table('siswa');
+            // $builder->select('*');
+            // $builder->join('kelas', 'siswa.id_kelas = kelas.id_kelas', 'left');
+            // $builder->where("nisn_en", $id);
+            // $builder->where("status_aktif", 0);
+            // $query = $builder->get();
+            // $siswa = $query->getResultArray();
+            $ptkModel = new PtkModel();
+            $ptk = $ptkModel->where("nik_en", $id)->first();
+            // $builder = $this->db->table('ptk');
+            // $builder->select('*');
+            // $builder->where("nik_en", $id);
+            // $query = $builder->get();
+            // $ptk = $query->getResultArray();
 
             if (!empty($siswa)) {
                 $siswa[0]['jam'] = date("H:i:s");
@@ -66,24 +71,19 @@ class Perpustakaan extends BaseController
 
     public function ambildatapengunjung()
     {
-        if ($this->request->isAJAX()) {
-            $builder = $this->db->table('pengunjung_perpus');
-            $builder->select('*');
-            $builder->join('siswa', 'pengunjung_perpus.id_siswa = siswa.nisn', "left");
-            $builder->join('ptk', 'pengunjung_perpus.id_ptk = ptk.nik_ptk', "left");
-            $builder->where("tgl_kunjungan", date("Y-m-d"));
-            $query = $builder->get();
-            $siswa = $query->getResultArray();
-            $data = [
-                'siswa' => $siswa,
-            ];
-            $msg = [
-                'data' => view("Perpustakaan/tabelPengunjung", $data)
-            ];
-            echo json_encode($msg);
-        } else {
-            exit("Tidak dapat diproses");
-        }
+        //if ($this->request->isAJAX()) {
+        $pengunjungModel = new PengunjungModel();
+        $siswa = $pengunjungModel->getTodayVisitors();
+        $data = [
+            'siswa' => $siswa,
+        ];
+        $msg = [
+            'data' => view("Perpustakaan/tabelPengunjung", $data)
+        ];
+        echo json_encode($msg);
+        // } else {
+        //     exit("Tidak dapat diproses");
+        // }
     }
 
     public function inputpengunjung()

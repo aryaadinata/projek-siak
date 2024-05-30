@@ -81,8 +81,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <img src="<?= base_url() ?>/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                     <span class="brand-text font-weight-light">Perpustakaan Foursma</span>
                 </a>
-
-
                 <!-- Right navbar links -->
                 <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
                     <li class="nav-item">
@@ -219,7 +217,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="<?= base_url() ?>/dist/js/demo.js"></script>
     <script src="<?= base_url() ?>/dist/js/md5.min.js"></script>
     <audio id="scan-success-sound" src="<?= base_url() ?>/sound/scan.mp3"></audio>
-    <script src="<?= base_url() ?>/dist/js/instascan.min.js"></script>
+    <script src="<?= base_url() ?>dist/js/instascan.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const successSound = document.getElementById('scan-success-sound');

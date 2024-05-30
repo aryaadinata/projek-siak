@@ -48,12 +48,12 @@
 <!-- <div class="viewmodaledit" style="display: none;"></div> -->
 
 <script>
-  function keluarga(nisn) {
+  function keluarga(nis) {
     $.ajax({
       type: "post",
       url: "<?= site_url('Siswa/ambilkeluarga') ?>",
       data: {
-        nisn: nisn
+        nis: nis
       },
       dataType: "json",
       beforeSend: function() {

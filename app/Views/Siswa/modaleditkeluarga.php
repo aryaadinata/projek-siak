@@ -14,6 +14,7 @@
                     <label for="" class="col-sm-4 col-form-label">NIK</label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control" placeholder="Masukkan NIK" name="nik" id="nik" value="<?= $keluarga["nik"] ?>">
+                        <input type="hidden" name="id" id="id" value="<?= $keluarga["id_kel"] ?>">
                         <div class="invalid-feedback errorNIK"></div>
                     </div>
                 </div>

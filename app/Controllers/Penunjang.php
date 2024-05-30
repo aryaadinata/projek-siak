@@ -41,12 +41,9 @@ class Penunjang extends BaseController
     public function ambilprestasi()
     {
         if ($this->request->isAJAX()) {
-            $nisn = session()->get('loggedSiswa');
-            $builder = $this->db->table('prestasi');
-            $builder->select('*');
-            $builder->where("nisn", $nisn);
-            $query = $builder->get();
-            $prestasi = $query->getResultArray();
+            $nis = session()->get('loggedSiswa');
+            $prestasiModel = new PrestasiModel();
+            $prestasi = $prestasiModel->where('nis', $nis)->findAll();
             $data = [
                 'prestasi' => $prestasi,
             ];
@@ -79,15 +76,9 @@ class Penunjang extends BaseController
     public function ambilpelanggaran()
     {
         if ($this->request->isAJAX()) {
-            $nisn = session()->get('loggedSiswa');
-            $builder = $this->db->table('pelanggaran');
-            $builder->select('*');
-            $builder->join('jenis_pelanggaran', 'pelanggaran.id_jenis_pelanggaran = pelanggaran.id_jenis_pelanggaran');
-            $builder->join('ptk', 'pelanggaran.nik_ptk = ptk.nik_ptk');
-            $builder->join('siswa', 'pelanggaran.nisn = siswa.nisn');
-            $builder->where("pelanggaran.nisn", $nisn);
-            $query = $builder->get();
-            $pelanggaran = $query->getResultArray();
+            $nis = session()->get('loggedSiswa');
+            $pelanggaranModel = new PelanggaranModel();
+            $pelanggaran = $pelanggaranModel->getPelanggaran($nis);
             $data = [
                 'pelanggaran' => $pelanggaran,
             ];

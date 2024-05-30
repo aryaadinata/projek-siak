@@ -25,9 +25,9 @@ class Auth extends BaseController
     public function regis_user()
     {
         $values = [
-            "username" => "foursma",
-            "pass" => Hash::make("Foursma@123"),
-            "level" => ("0"),
+            "username" => "1234",
+            "pass" => Hash::make("1234"),
+            "level" => ("2"),
         ];
         $inputadmin = new UserModel();
         $inputadmin->insert($values);
@@ -69,7 +69,7 @@ class Auth extends BaseController
             if (!$cek_password) {
                 session()->setFlashdata("fail", "gagal");
                 return redirect()->to('/')->withInput();
-            } elseif ($level == 1) {
+            } elseif ($level == 2) {
                 $user_id = $user_info['username'];
                 session()->set('loggedSiswa', $user_id);
                 // echo $user_id;

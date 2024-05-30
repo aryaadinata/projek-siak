@@ -5,6 +5,7 @@
             <th>Username</th>
             <th>Nama</th>
             <th>Level</th>
+            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -19,6 +20,7 @@
                 <td class="tengah"><?= $row["username"] ?></td>
                 <td><?= $row["nama"] ?></td>
                 <td class="tengah"><?php if ($row["level"] == 1) echo "PTK" ?></td>
+                <td></td>
                 <td class="tengah">
                     <a href="<?= base_url() ?>/lihatguru/<?= $row["username"] ?>" type="button" title="Edit" class="btn btn-flat btn-info btn-xs">detail</a>
                     <button type="button" title="Hapus" class="btn btn-flat btn-danger btn-xs" onclick="hapus('<?= $row['username'] ?>')">hapus</button>

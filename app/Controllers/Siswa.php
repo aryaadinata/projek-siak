@@ -13,6 +13,7 @@ class Siswa extends BaseController
     public function __construct()
     {
         helper(['url', 'form']);
+        $this->session = \Config\Services::session();
     }
 
     public function index()
@@ -39,37 +40,29 @@ class Siswa extends BaseController
 
     public function ambilbiodata()
     {
-        if ($this->request->isAJAX()) {
-            $nisn = session()->get('loggedSiswa');
-            $builder = $this->db->table('siswa');
-            $builder->select('*');
-            $builder->join('kelas', 'siswa.id_kelas = kelas.id_kelas', 'left');
-            $builder->where("nisn", $nisn);
-            $query = $builder->get();
-            $siswa = $query->getResultArray();
-            $data = [
-                'siswa' => $siswa,
-                'tanggal_indo' => $this->tanggal_indo($siswa[0]["tanggal_lahir"]),
-            ];
-            $msg = [
-                'data' => view('Siswa/isiBiodata', $data)
-            ];
-            echo json_encode($msg);
-        } else {
-            exit("Tidak dapat diproses");
-        }
+        // if ($this->request->isAJAX()) {
+        $nisn = md5(session()->get('loggedSiswa'));
+        $siswaModel = new SiswaModel();
+        $siswa = $siswaModel->getSiswabynisn($nisn);
+        $data = [
+            'siswa' => $siswa,
+            'tanggal_indo' => $this->tanggal_indo($siswa[0]["tanggal_lahir"]),
+        ];
+        $msg = [
+            'data' => view('Siswa/isiBiodata', $data)
+        ];
+        echo json_encode($msg);
+        // } else {
+        //     exit("Tidak dapat diproses");
+        // }
     }
 
     public function formeditbiodata()
     {
         if ($this->request->isAJAX()) {
-            $nisn = $this->request->getVar('nisn');
-            $builder = $this->db->table('siswa');
-            $builder->select('*');
-            $builder->join('kelas', 'siswa.id_kelas = kelas.id_kelas', 'left');
-            $builder->where("nisn", $nisn);
-            $query = $builder->get();
-            $siswa = $query->getResultArray();
+            $nisn = md5(1234);
+            $siswaModel = new SiswaModel();
+            $siswa = $siswaModel->getSiswabynisn($nisn);
             $data = [
                 'siswa' => $siswa,
                 'tanggal_indo' => $this->tanggal_indo($siswa[0]["tanggal_lahir"]),
@@ -91,7 +84,7 @@ class Siswa extends BaseController
             $valid = $this->validate([
                 'nik' => [
                     'label' => "NIK",
-                    'rules' => "required|is_unique[siswa.nik,nisn," . session()->get('loggedSiswa') . "]",
+                    'rules' => "required|is_unique[siswa.nik,nis," . session()->get('loggedSiswa') . "]",
                     'errors' => [
                         'required' => '{field} tidak boleh kosong',
                         'is_unique' => '{field} sudah terdaftar !',
@@ -239,21 +232,21 @@ class Siswa extends BaseController
             $this->session->setFlashdata('foto', $validation->getError('foto'));
             return redirect()->to('/Siswa/biodata');
         } else {
-            $nisn = session()->get('loggedSiswa');
+            $nis = session()->get('loggedSiswa');
             $foto = $this->request->getFile('foto');
             $ext = $foto->getClientExtension();
             $siswaModel = new SiswaModel();
-            $namaFoto = $nisn . "." . $ext;
+            $namaFoto = $nis . "." . $ext;
             $foto->move("dist/img/pasfoto", $namaFoto, true);
             //$foto->move("dist/img/pasfoto" . 'uploads', null, true);
 
             $simpandata = [
                 'foto' => $namaFoto,
             ];
-            $siswaModel->update($nisn, $simpandata);
+            $siswaModel->update($nis, $simpandata);
 
             $this->session->setFlashdata('suksesupload', "Upload Foto Berhasil");
-            return redirect()->to('/Siswa/biodata');
+            return redirect()->back();
         }
     }
 
@@ -278,12 +271,9 @@ class Siswa extends BaseController
     public function ambilkeluarga()
     {
         if ($this->request->isAJAX()) {
-            $nisn = $this->request->getVar('nisn');
-            $builder = $this->db->table('keluarga');
-            $builder->select('*');
-            $builder->where("nisn", $nisn);
-            $query = $builder->get();
-            $keluarga = $query->getResultArray();
+            $nis = $this->request->getVar("nis");
+            $keluargaModel = new KeluargaModel();
+            $keluarga = $keluargaModel->where('nis', $nis)->findAll();
             $data = [
                 'keluarga' => $keluarga,
             ];
@@ -409,7 +399,7 @@ class Siswa extends BaseController
                     'pekerjaan' => $this->request->getVar('pekerjaan'),
                     'penghasilan' => $this->request->getVar('penghasilan'),
                     'no_hp' => $this->request->getVar('no_hp'),
-                    'nisn' => session()->get('loggedSiswa'),
+                    'nis' => session()->get('loggedSiswa'),
                 ];
                 $keluarga = new KeluargaModel();
                 $keluarga->insert($simpankeluarga);
@@ -419,7 +409,7 @@ class Siswa extends BaseController
             }
             echo json_encode($msg);
         } else {
-            exit("Tidak Dapat Diproses");
+            return redirect()->back();
         }
     }
 
@@ -537,7 +527,7 @@ class Siswa extends BaseController
                     'pekerjaan' => $this->request->getVar('pekerjaan'),
                     'penghasilan' => $this->request->getVar('penghasilan'),
                     'no_hp' => $this->request->getVar('no_hp'),
-                    'nisn' => session()->get('loggedSiswa'),
+                    'nis' => session()->get('loggedSiswa'),
                 ];
                 $id = $this->request->getVar('id');
                 $keluarga = new KeluargaModel();

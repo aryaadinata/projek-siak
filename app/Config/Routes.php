@@ -6,7 +6,11 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Auth::index');
+$routes->get('/Perpustakaan/kunjungan', 'Perpustakaan::kunjungan');
+$routes->post('/Perpustakaan/ambildatapengunjung', 'Perpustakaan::ambildatapengunjung');
 $routes->post('/Auth/cek_login/', 'Auth::cek_login');
+$routes->get('/Auth/regis_user/', 'Auth::regis_user');
+$routes->get('/Auth/logoutAdmin/', 'Auth::logoutAdmin');
 
 $routes->group('', ['filter' => 'filterlogin'], function ($routes) {
     $routes->get('/Ptk/detailguru/(:num)', 'Ptk::detailguru');
@@ -96,6 +100,19 @@ $routes->group('', ['filter' => 'filterlogin'], function ($routes) {
 $routes->group('', ['filter' => 'filtersiswa'], function ($routes) {
     $routes->get('/Siswa', 'Siswa::index');
     $routes->get('/Siswa/(:segment)', 'Siswa::$1');
+    $routes->post('/Siswa/ambilbiodata', 'Siswa::ambilbiodata');
+    $routes->post('/Siswa/formeditbiodata', 'Siswa::formeditbiodata');
+    $routes->post('/Siswa/formeditbiodata', 'Siswa::formeditbiodata');
+    $routes->post('/Siswa/updatebiodata', 'Siswa::updatebiodata');
+    $routes->post('/Siswa/uploadfoto', 'Siswa::uploadfoto');
+    $routes->post('/Siswa/ambilkeluarga', 'Siswa::ambilkeluarga');
+    $routes->post('/Siswa/inputkeluarga', 'Siswa::inputkeluarga');
+    $routes->post('/Siswa/formeditkeluarga', 'Siswa::formeditkeluarga');
+    $routes->post('/Siswa/updatekeluarga', 'Siswa::updatekeluarga');
+    $routes->post('/Siswa/hapuskeluarga', 'Siswa::hapuskeluarga');
+
     $routes->get('/Penunjang/(:segment)', 'Penunjang::$1');
-    $routes->get('/Auth/ambilsession', 'Penunjang::prestasi');
+    $routes->post('/Penunjang/ambilprestasi', 'Penunjang::ambilprestasi');
+    $routes->post('/Penunjang/ambilpelanggaran', 'Penunjang::ambilpelanggaran');
+    $routes->post('/Auth/ambilsession', 'Auth::ambilsession');
 });

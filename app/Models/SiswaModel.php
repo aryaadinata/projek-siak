@@ -74,6 +74,17 @@ class SiswaModel extends Model
         return $query->getResultArray();
     }
 
+    public function getSiswabynisn($id)
+    {
+        $builder = $this->db->table('siswa');
+        $builder->select('*');
+        $builder->join('kelas', 'siswa.id_kelas = kelas.id_kelas', 'left');
+        $builder->where("nis_en", $id);
+        $builder->where("status_aktif", 0);
+        $query = $builder->get();
+        return $query->getResultArray();
+    }
+
     public function biodatasiswa($nis)
     {
         $builder = $this->db->table('siswa');
